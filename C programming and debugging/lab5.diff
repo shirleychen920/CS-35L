@@ -1,0 +1,15 @@
+2015-05-04  Haojie Chen  <haojie@lnxsrv01.seas.ucla.edu>
+
+        * timespec.h (timespec_cmp):Change type int to signed long long. 
+
+--- /u/cs/ugrad/haojie/coreutils-with-bug/lib/timespec.h	2005-09-21 23:05:39.000000000 -0700
++++ timespec.h	2015-05-03 22:16:42.015258000 -0700
+@@ -45,7 +45,7 @@
+ static inline int
+ timespec_cmp (struct timespec a, struct timespec b)
+ {
+-  int diff = a.tv_sec - b.tv_sec;
++  signed long  long  diff = a.tv_sec - b.tv_sec;
+   return diff ? diff : a.tv_nsec - b.tv_nsec;
+ }
+ 

@@ -1,0 +1,80 @@
+Lab5   By Haojie Chen
+--------------------------------
+1. 
+$ wget http://cs.ucla.edu/classes/spring15/cs35L/assign/coreutils-with-bug.tar.gz
+$ tar xvf coreutils-with-bug.tar.gz
+I ussed tese two commands to get the coreutils zip file from online and unzip it.
+
+2.
+$ cd coreutils-with-bug
+$ ./configure CFLAGS="-g"
+$ make
+Go to the coreutils-with-bug folder, I ran ./configure with the environmental variable "-g" to prepare a debug build, and then hit make to compile it.
+When building, it said that there was conflicting types for 'futimens'.
+
+3. 
+$ wget http://cs.ucla.edu/classes/spring15/cs35L/assign/coreutils.diff
+$ patch -p0 < coreutils.diff
+$ make 
+Use wget to get the patch online and ran the second command above to apply it.
+Then rebuild the program by hitting make again. This time the patch fixes the
+type conflicts. It replaces futimens with coreutils_futimens and tee with 
+coreutils_tee. It also replaces the backup files with the .c files. 
+(Such as utimens.h, tee.c, copy.c and touch.c)
+
+4.
+$ tmp=$(mktemp -d)
+Create a temporary directory under/temp.
+
+$ cd $tmp
+Go to the temporary directory.
+
+5.
+$ touch -d '1918-11-11 11:00 GMT' wwi-armistice
+$ touch now
+$ touch now1
+Change the timestamp of file wwi-armistic with the date 1918-11-11 11:00 GMT, so it should be the oldest file.(Shoule be at the bottom of the list)
+Touch files now and now1 so that now1 should be the newest file and then now. (On the top)
+
+6.
+$ ls -lt
+List the files sorted by modification time using the above command. The most newly modified file is on the top. Result like following:
+-rw-r--r-- 1 haojie csugrad 0 May  2 19:29 now1
+-rw-r--r-- 1 haojie csugrad 0 May  2 19:28 now
+-rw-r--r-- 1 haojie csugrad 0 Nov 11  1918 wwi-armistice
+
+This is the right version of ls.
+
+7. 
+$ ~/coreutils-with-bug/src/ls -lt
+This command ran the ls from coreutils-with-bug source code and it thought wwi-armistice is the newest modified file. Reproduce the problem using this command, and the result looks like following:
+-rw-r--r-- 1 haojie csugrad 0 1918-11-11 03:00 wwi-armistice
+-rw-r--r-- 1 haojie csugrad 0 2015-05-02 19:29 now1
+-rw-r--r-- 1 haojie csugrad 0 2015-05-02 19:28 now
+
+8. 
+I opened ls.c file and inspected through it. A function called sort_files seems like being in charge of sorting the files chronilogically. So I put a break point there.
+$ gdb --args ./ls -lt wwi-armistice now now1
+$ b sort_files
+$ start
+$ c
+
+Then I found that a function called compare_mtime is responsible for sorting 
+the files by time, so I traced it into a header file called timespec.h and 
+found a function called timespec_cmp. The problem is here.
+m_time for wwi_armistice is negative, but it is too long ago so when it was 
+subtrated from a positive number it becomes negative. (out of range and flip 
+back)
+
+To fix this overflow, I changed the type of diff from int to signed long long 
+so that it could store a much greater range of number.
+
+Then I added ChangeLog entry to it.
+
+Then I got another unfixed version of coreutils-with-bug and generated a patch using the unfixed timespec.h in it:
+$ diff -u timespec.h ~/coreutils-with-bug/lib/timespec.h > lab5.diff
+
+Testing it on Seasnet server, it has no problem. It is because the SEASnet 
+servers use 64-bit so when it stores the timestamp the negative sign won't 
+be lost.While we stored it as 32-bit so the sign is lost, it becomse positives
+ and appears to be from the future.
