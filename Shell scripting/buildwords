@@ -1,0 +1,52 @@
+#!/usr/local/cs/bin/bash
+
+#convert all the uppercase letters to lowercase
+tr '[:upper:]' '[:lower:]' | \
+
+#delete the content at the beginning and in the ed
+sed '/<!doctype/,/adopt/d' | \
+
+sed '/<\/table>/,/<\/html>/d' | \
+
+#remove extra blocks like this
+sed '/<td><br>/,/<td><\/td>/d' | \
+
+#remove all the </tr>
+sed 's/<\/tr>//g' | \
+
+#remove all the English words
+sed '/<tr>/,/\/td>/d' | \
+
+#remove all the <u>
+sed 's/<u>//g' | \
+
+#remove all the </u>
+sed 's/<\/u>//g' | \
+
+#remove all the <td>
+sed 's/<td>//g' | \
+
+#remove all the </td>
+sed 's/<\/td>//g' | \
+
+#remove all the illegal words
+sed '/^[a-z`]/d' | \
+
+#seperate lines
+sed 's/\ /\n/g' | \
+sed 's/,/\n/g' | \
+
+#delete extra space
+tr -cs 'A-Za-z`' '[\n*]' | \
+
+#delete the first blank line
+sed 1d | \
+
+#replace ` with '
+sed 's/`/\x27/g' | \
+
+#delete invalid characters
+grep "^[pk'mnwlhaeiou]*$" | \
+
+# sort the words
+sort -u
