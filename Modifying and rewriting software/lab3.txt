@@ -1,0 +1,48 @@
+I grabbed Coreutils 7.6 by using:
+wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz
+
+To decompress the file, I used:
+tar -zxvf coreutils-7.6.tar.gz
+
+Then I made a temporary directory by using:
+mkdir coreutilsInstall
+
+In order to run the configure script, I used:cd ./coreuti
+ls-7.6 to change into the file's directory, then used:pwd
+ coreutilsInstall to get the absolute path of the tempora
+ry directory I created.
+
+Then, I ran the configure script by using:
+./configure --prefix=/u/cs/ugrad/haojie/coreutilsInstall
+
+Then I ran these commands:
+make
+make install
+in order to compile and install the application.
+
+I used:cd coreutils-7.6/src to go to the source file
+directory, then opened ls.c and applied the patch using emacs.
+
+Then I ran the command "make" to build the fixed version.
+It showed that these files were updated:
+CC ls.o
+CCLD dir
+CCLD vdir
+CCLD ls
+These were updated becuase we had modified the object file
+ ls.c, so the link and executable files were needed to be 
+updated.
+
+I ran these command and compare them to make sure the patch
+ worked:
+./ls -l /bin/bash
+ls -l /bin/bash
+
+The first command above generated the desired result.
+
+Then for testing reason, I created a new file called test1,
+ and used the command: touch -t 201401210959.30 test2 to c
+reate a file called test2 that has a modification date more
+ than one year from now.
+
+Tests succedded.
