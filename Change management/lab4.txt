@@ -1,0 +1,136 @@
+Lab4 Notebook
+Haojie Chen
+--------------------------------------------------
+$ export PATH=$PATH:/usr/local/cs/bin
+$ mkdir gitroot
+$ cd gitroot
+
+1.
+$ git clone git://git.savannah.gnu.org/diffutils.git
+I used this command to get a copy of the Diffutils repository in Git format.
+
+2.
+$ cd ./diffutils
+Change the working directory to the directory of diffutils. I do this because
+ I am going to get a log of changes to Diffutil's master branch.
+
+$ git log > git-log.txt
+Git log gets a log of all the changes and information of the diffutil's master
+ branch, this command also saves this log to a file called git-log.txt.
+
+3.
+$ git tag > git-tags.txt
+The command git tag shows a list of tags used for Diffutils. The command above
+ puts them into a file called git-tags.txt.
+
+4.
+Enter file git-log.txt and seach forward for "like this". After the wanted 
+commit is found, copy its commit ID.
+
+$ git show commitID > quote-patch.txt
+Git show  shows the wanted commit. The command above puts the commit into the
+ file quote-patch.txt.
+
+5.
+$ git checkout v3.0 -b branch3.0
+Git checkout creates a new branch. I used this command to create a new branch
+ called branch 3.0 that is bound to version 3.0 of Diffutils.
+
+6.
+$ patch -p1 < quote-patch.txt
+This command applies the patch to version3.0. There were several times when
+ it didn't now what file to patch, I just pressed Enter to skip them.
+
+7.
+$ git status
+It gives a list of the files that were modified but not yet committed and a
+ list of untracked change that were generated when patching.
+
+8.9.
+I used emacs to enter all the file other than .c files.
+C-x v =
+I used this command in Emacs to locate all the changes in the file.
+C-x v u
+I used this command in Emacs to revert all the changes in the file.
+Apply these two commands to all the files under the list of modified but not
+ committed in order to undo all the changes to these files.
+
+Then I enter each .c files and .h files, manually delete all the changes that
+ were done to the comments, and kept all the changes that are done to character
+ string constants.
+
+10. 
+I used emacs to enter src/*.c.rej. It contains all the changes that are failed 
+to be applied by the patch, they were not done on the source file yet. I 
+manually found them in the original files and changed them.
+
+11.
+I used rm command to remove the untracked files on the list.
+
+12. 
+$ git status
+This command shows a list of files that had been modified like the following:
+M    src/cmp.c
+M    src/diff.c
+M    src/diff3.c
+M    src/dir.c
+M    src/sdiff.c
+M    src/util.c
+
+$ git diff > quote-3.0-patch.txt
+This put the patch into the file called quote-3.0-patch.txt.
+
+13.
+$ patch -p1 < quote-3.0-patch.txt
+I used this command to apply the new patch.
+
+$ export PATH=/usr/local/cs/bin:$PATH
+$ ./bootstrap
+$ ./configure
+$ make
+$ make check
+I found these commands in README-hacking and used them to build the resulting 
+modified version of Diffutils.
+
+14.
+$ cd ..
+Change back to directory gitroot.
+
+$ mv diffutils diffutilsmodified
+I used this command to move the files under diffutils to a new folder called 
+diffutilsmodified in order for the future comparison, this is the modified 
+version.
+
+Enter the diffutilsmodified folder, I used the following command to copy the 
+modified source code into a new folder under gitroot called diffutils-3.0-patch
+:
+$ cp -ar src ~/gitroot/diffutils-3.0-patch 
+
+$ cd ..
+Change back to directory gitroot
+
+$ git clone git://git.savannah.gnu.org/diffutils.git
+Get a copy of diffutils repository again under the directory of gitroot.
+
+$ cd diffutils
+$ git checkout v3.0 -b newbranch3.0
+Enter the new diffutils directory and checkout to a 3.0 version branch.
+
+Then I used the following command to move the source code under new diffutils 
+to a new folder called diffutils-3.0:
+$ cp -ar src ~/gitroot/diffutils-3.0
+
+Under gitroot directory, I ran the following command to save the differences 
+between the modified diffutils3.0 and the original version into a file called 
+quote-3.0-test.txt:
+$ diff -pru diffutils-3.0 diffutils-3.0-patch > quote-3.0-test.txt
+
+15. 
+$ mv quote-3.0-test.txt ~/gitroot/diffutilsmodified
+Move the file quote-3.0-test.txt to the folder diffutilsmodified, where quote-
+3.0-patch.txt is located.
+
+$ diff quote-3.0-test.txt quote-3.0-patch.txt
+Ran this command to comapre the cotents of these two files.
+They are not identical, but the differences do not affect the code 
+implementation.

@@ -1,0 +1,21 @@
+Description of the subwindows in the screenshot
+-----------------------------------------------
+Top left subwindow:
+It shows all the patches and mergepoints in chronological order with short 
+description messages after each patch.
+
+Top middle subwindow:
+It shows a list of patch authors and their emails.
+
+Top right:
+It shows the date and time of when the commits were made.
+
+Shal ID: 
+It shows the commit ID.
+
+Bottom right subwindow:
+It shows a list of files related to the selected commit.
+
+Bottom left subwindow:
+It shows the content of the selected file from the righthand list.
+We can see the changes here.
