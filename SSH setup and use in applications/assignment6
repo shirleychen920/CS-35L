@@ -1,0 +1,64 @@
+Lab6     By Haojie Chen
+-------------------------------------------------------------
+Server:
+$sudo apt-get update
+$sudo apt-get install openssh-server
+(Instal OpenSSH.)
+
+$sudo useradd -d /home/yiwei -m yiwei
+$sudo passwd yiwei
+//huihuilovezik Enter
+//huihuilovezik Enter
+(Create an account for my partner Yiwei.)
+
+$cd /home/yiwei
+$sudo mkdir .ssh
+(Create a directory for my partner.)
+
+$sudo chown -R yiwei .ssh
+$sudo chmod 700 .ssh
+(Allow my partner to have full permissions of this directory.)
+
+$ifconfig
+(This shows the IP address of the my server, which will be given to my partner.)
+
+$ps aux | grep ssh
+(This shows a process named 'sshd'-the ssh server.)
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+Client(My partner: Yiwei):
+$sudo apt-get update
+$sudo apt-get install openssh-client
+(Install OpenSSH.)
+
+$ssh-keygen
+//huihuilovezikai Enter
+//huihuilovezikai Enter
+(Generate public and private keys)
+
+$ping //IP address
+//C-c
+(To check if the server responds;if so, terminate the process using C-c.)
+
+$ssh-copy-id -i shirley//IP
+//Enter chenhaojie (password)
+(Copy the public key to my partner's server. Next time I will be able
+to log onto her machine without password.)
+
+$ssh-add
+//Enter piaoruining1996 (passphrase)
+(Add private key to authentication agent.)
+
+$ssh -X shirley@  //IP
+//Enter piaoruining1996 (passphrase)
+(The ssh-agent asks for passphrase to access the
+private key.)
+
+And I should be able to log onto my partner's server without password or 
+passphrase next time.
+
+$ xterm
+$ firefox
+(I am able to open xterm and firefox on my machine but they are actually
+running on my partner's machine.
